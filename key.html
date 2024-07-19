@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp-like Keyboard</title>
+    <link rel="stylesheet" href="styles.css">
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #f0f0f0;
+    }
+    
+    .container {
+        text-align: center;
+        width: 100%;
+        max-width: 500px;
+    }
+    
+    textarea {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        font-size: 16px;
+        box-sizing: border-box;
+    }
+    
+    button {
+        padding: 10px 20px;
+        margin-bottom: 20px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+    
+    .keyboard {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        background-color: #ffffff;
+        padding: 10px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+    }
+    
+    .keyboard-row {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 10px;
+    }
+    
+    .key {
+        background-color: #e0e0e0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 10px;
+        margin: 3px;
+        font-size: 16px;
+        cursor: pointer;
+        flex: 1;
+        text-align: center;
+        min-width: 30px;
+        max-width: 45px;
+    }
+    
+    .key.special-key {
+        flex: 2;
+    }
+    
+    .key:hover {
+        background-color: #d0d0d0;
+    }
+    
+</style>
+</head>
+<body>
+    <div class="container">
+        <textarea id="textInput" rows="4" cols="50" placeholder="Type a message"></textarea>
+        <button id="sendButton">Send via WhatsApp</button>
+        <div id="keyboard" class="keyboard">
+            <!-- Keyboard rows -->
+            <div class="keyboard-row">
+                <button class="key">Q</button>
+                <button class="key">W</button>
+                <button class="key">E</button>
+                <button class="key">R</button>
+                <button class="key">T</button>
+                <button class="key">Y</button>
+                <button class="key">U</button>
+                <button class="key">I</button>
+                <button class="key">O</button>
+                <button class="key">P</button>
+            </div>
+            <div class="keyboard-row">
+                <button class="key">A</button>
+                <button class="key">S</button>
+                <button class="key">D</button>
+                <button class="key">F</button>
+                <button class="key">G</button>
+                <button class="key">H</button>
+                <button class="key">J</button>
+                <button class="key">K</button>
+                <button class="key">L</button>
+            </div>
+            <div class="keyboard-row">
+                <button class="key">Z</button>
+                <button class="key">X</button>
+                <button class="key">C</button>
+                <button class="key">V</button>
+                <button class="key">B</button>
+                <button class="key">N</button>
+                <button class="key">M</button>
+                <button class="key special-key" id="backspace">⌫</button>
+            </div>
+            <div class="keyboard-row">
+                <button class="key special-key" id="space">Space</button>
+                <button class="key special-key" id="enter">Enter</button>
+            </div>
+        </div>
+    </div>
+    <script src="scripts.js">
+        document.addEventListener("DOMContentLoaded", function() {
+            const textInput = document.getElementById("textInput");
+            const keyboard = document.getElementById("keyboard");
+            const keys = document.querySelectorAll(".key");
+            const sendButton = document.getElementById("sendButton");
+        
+            textInput.addEventListener("focus", () => {
+                keyboard.style.display = "flex";
+            });
+        
+            keys.forEach(key => {
+                key.addEventListener("click", () => {
+                    const keyValue = key.textContent.trim();
+                    if (key.id === "backspace") {
+                        textInput.value = textInput.value.slice(0, -1);
+                    } else if (key.id === "space") {
+                        textInput.value += " ";
+                    } else if (key.id === "enter") {
+                        textInput.value += "\n";
+                    } else {
+                        textInput.value += keyValue;
+                    }
+                });
+            });
+        
+            document.addEventListener("click", (event) => {
+                if (!keyboard.contains(event.target) && event.target !== textInput) {
+                    keyboard.style.display = "none";
+                }
+            });
+        
+            sendButton.addEventListener("click", () => {
+                const message = textInput.value;
+                sendMessageToWhatsApp(message);
+            });
+        });
+        
+        function sendMessageToWhatsApp(message) {
+            const phoneNumber = 'YOUR_PHONE_NUMBER'; // Replace with the recipient's phone number
+            const url = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${encodeURIComponent(message)}`;
+            window.open(url, '_blank');
+        }
+        
+    </script>
+</body>
+</html>
